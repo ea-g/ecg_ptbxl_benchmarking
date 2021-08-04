@@ -21,13 +21,13 @@ import scipy.stats
 import multiprocessing
 import datetime as dt
 from collections import defaultdict, Counter
-from keras.layers import Dropout, Dense, Input
-from keras.models import Model, Sequential
-from keras.models import load_model
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras import backend as K
+# from keras.layers import Dropout, Dense, Input
+# from keras.models import Model, Sequential
+# from keras.models import load_model
+# from keras.callbacks import EarlyStopping, ModelCheckpoint
+# from keras import backend as K
 from sklearn.metrics import roc_auc_score
-import tensorflow as tf
+# import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 
 def calculate_entropy(list_values):

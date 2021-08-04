@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import wfdb
 import ast
-from sklearn.metrics import fbeta_score, roc_auc_score, roc_curve, roc_curve, auc
+from sklearn.metrics import fbeta_score, roc_auc_score, roc_curve, auc
 from sklearn.preprocessing import StandardScaler, MultiLabelBinarizer
 from matplotlib.axes._axes import _log as matplotlib_axes_logger
 import warnings
