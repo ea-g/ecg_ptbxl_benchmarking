@@ -74,7 +74,9 @@ def get_single_ecg_features(signal, waveletname='db6'):
 def get_ecg_features(ecg_data, parallel=True):
     if parallel:
         pool = multiprocessing.Pool()
-        return np.array(pool.map(get_single_ecg_features, ecg_data))
+        feats = np.array(pool.map(get_single_ecg_features, ecg_data))
+        pool.close()
+        return feats
     else:
         list_features = []
         for signal in tqdm(ecg_data):
