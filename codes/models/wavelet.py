@@ -110,9 +110,9 @@ class WaveletModel(ClassificationModel):
         
         if self.classifier == 'LR':
             if self.n_classes > 1:
-                clf = OneVsRestClassifier(LogisticRegression(C=self.regularizer_C, solver='lbfgs', max_iter=1000, n_jobs=-1))
+                clf = OneVsRestClassifier(LogisticRegression(C=self.regularizer_C, solver='lbfgs', max_iter=1000, n_jobs=-2))
             else:
-                clf = LogisticRegression(C=self.regularizer_C, solver='lbfgs', max_iter=1000, n_jobs=-1)
+                clf = LogisticRegression(C=self.regularizer_C, solver='lbfgs', max_iter=1000, n_jobs=-2)
             clf.fit(XF_train, y_train)
             pickle.dump(clf, open(self.outputfolder+'clf.pkl', 'wb'))
         elif self.classifier == 'RF':
