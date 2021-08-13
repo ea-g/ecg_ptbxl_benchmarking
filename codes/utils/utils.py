@@ -13,8 +13,6 @@ import wfdb
 import ast
 from sklearn.metrics import fbeta_score, roc_auc_score, roc_curve, auc
 from sklearn.preprocessing import StandardScaler, MultiLabelBinarizer
-from matplotlib.axes._axes import _log as matplotlib_axes_logger
-import warnings
 
 # EVALUATION STUFF
 def generate_results(idxs, y_true, y_pred, thresholds):
@@ -23,7 +21,7 @@ def generate_results(idxs, y_true, y_pred, thresholds):
 def evaluate_experiment(y_true, y_pred, thresholds=None):
     results = {}
 
-    if not thresholds is None:
+    if thresholds:
         # binary predictions
         y_pred_binary = apply_thresholds(y_pred, thresholds)
         # PhysioNet/CinC Challenges metrics
@@ -34,7 +32,7 @@ def evaluate_experiment(y_true, y_pred, thresholds=None):
     # label based metric
     results['macro_auc'] = roc_auc_score(y_true, y_pred, average='macro')
     
-    df_result = pd.DataFrame(results, index=[0])
+    df_result = pd.DataFrame(results, index=[0])  # don't need index?
     return df_result
 
 def challenge_metrics(y_true, y_pred, beta1=2, beta2=2, class_weights=None, single=False):

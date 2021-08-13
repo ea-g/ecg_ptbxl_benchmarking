@@ -136,7 +136,7 @@ class SCP_Experiment():
         np.array(ensemble_test).mean(axis=0).dump(ensemblepath + 'y_test_pred.npy')
         np.array(ensemble_val).mean(axis=0).dump(ensemblepath + 'y_val_pred.npy')
 
-    def evaluate(self, n_bootstraping_samples=100, n_jobs=os.cpu_count(), bootstrap_eval=False, dumped_bootstraps=True):
+    def evaluate(self, n_bootstraping_samples=100, n_jobs=os.cpu_count(), bootstrap_eval=False, dumped_bootstraps=False):
 
         # get labels
         y_train = np.load(self.outputfolder+self.experiment_name+'/data/y_train.npy', allow_pickle=True)
@@ -158,7 +158,7 @@ class SCP_Experiment():
 
         # store samples for future evaluations
         #train_samples.dump(self.outputfolder+self.experiment_name+'/train_bootstrap_ids.npy')
-        test_samples.dump(self.outputfolder+self.experiment_name+'/test_bootstrap_ids.npy')
+        #test_samples.dump(self.outputfolder+self.experiment_name+'/test_bootstrap_ids.npy')
         #val_samples.dump(self.outputfolder+self.experiment_name+'/val_bootstrap_ids.npy')
 
         # iterate over all models fitted so far
@@ -178,7 +178,7 @@ class SCP_Experiment():
             else:
                 thresholds = None
 
-            pool = multiprocessing.Pool(n_jobs)
+            # pool = multiprocessing.Pool(n_jobs) # uncomment for multiprocess
 
             # tr_df = pd.concat(pool.starmap(utils.generate_results, zip(train_samples, repeat(y_train), repeat(y_train_pred), repeat(thresholds))))
             # tr_df_point = utils.generate_results(range(len(y_train)), y_train, y_train_pred, thresholds)
@@ -191,16 +191,18 @@ class SCP_Experiment():
             #     columns=tr_df.columns,
             #     index=['point', 'mean', 'lower', 'upper'])
 
-            te_df = pd.concat(pool.starmap(utils.generate_results, zip(test_samples, repeat(y_test), repeat(y_test_pred), repeat(thresholds))))
+            # uncomment below for original where marked
+
+            # te_df = pd.concat(pool.starmap(utils.generate_results, zip(test_samples, repeat(y_test), repeat(y_test_pred), repeat(thresholds)))) # uncomment
             te_df_point = utils.generate_results(range(len(y_test)), y_test, y_test_pred, thresholds)
-            te_df_result = pd.DataFrame(
-                np.array([
-                    te_df_point.mean().values, 
-                    te_df.mean().values,
-                    te_df.quantile(0.05).values,
-                    te_df.quantile(0.95).values]), 
-                columns=te_df.columns, 
-                index=['point', 'mean', 'lower', 'upper'])
+            # te_df_result = pd.DataFrame(
+            #     np.array([
+            #         te_df_point.mean().values,
+            #         te_df.mean().values,
+            #         te_df.quantile(0.05).values,
+            #         te_df.quantile(0.95).values]),
+            #     columns=te_df.columns,
+            #     index=['point', 'mean', 'lower', 'upper']) # uncomment this block
 
             # val_df = pd.concat(pool.starmap(utils.generate_results, zip(val_samples, repeat(y_val), repeat(y_val_pred), repeat(thresholds))))
             # val_df_point = utils.generate_results(range(len(y_val)), y_val, y_val_pred, thresholds)
@@ -213,9 +215,10 @@ class SCP_Experiment():
             #     columns=val_df.columns, 
             #     index=['point', 'mean', 'lower', 'upper'])
 
-            pool.close()
+            # pool.close() # uncomment here
 
             # dump results
             #tr_df_result.to_csv(rpath+'tr_results.csv')
             #val_df_result.to_csv(rpath+'val_results.csv')
-            te_df_result.to_csv(rpath+'te_results.csv')
+            te_df_point.to_csv(rpath+'te_point_results.csv')
+            # te_df_result.to_csv(rpath+'te_results.csv') # uncomment this one for quantile ranges and boostrap eval
