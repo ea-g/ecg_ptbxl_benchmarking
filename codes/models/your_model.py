@@ -20,7 +20,7 @@ def matrix_2_df(matrix, column_prefix='lead_'):
 
 
 class MiniRocketModel(ClassificationModel):
-    def __init__(self, name, n_classes,  sampling_frequency, outputfolder, input_shape, regularizer_C=.001, classifier='LR'):
+    def __init__(self, name, n_classes,  sampling_frequency, outputfolder, input_shape, regularizer_C=.001, classifier='LR', toler=1e-3):
         self.name = name
         self.n_classes = n_classes
         self.sampling_frequency = sampling_frequency
@@ -28,6 +28,7 @@ class MiniRocketModel(ClassificationModel):
         self.input_shape = input_shape
         self.regularizer_C = regularizer_C
         self.classifier = classifier
+        self.toler = toler
 
     def fit(self, X_train, y_train, X_val, y_val):
         mini_mv = MiniRocketMultivariate().fit(matrix_2_df(X_train))
@@ -38,9 +39,9 @@ class MiniRocketModel(ClassificationModel):
         if self.classifier == 'LR':
             if self.n_classes > 1:
                 clf = OneVsRestClassifier(
-                    LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2))
+                    LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2, tol=self.toler))
             else:
-                clf = LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2)
+                clf = LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2, tol=self.toler)
             clf.fit(XF_train, y_train)
             pickle.dump(clf, open(self.outputfolder + 'clf.pkl', 'wb'))
 

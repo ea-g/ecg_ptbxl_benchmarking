@@ -89,7 +89,7 @@ def get_ecg_features(ecg_data, parallel=False):
 #    return tf.py_func(macro_auroc, (y_true, y_pred), tf.double)
 
 class WaveletModel(ClassificationModel):
-    def __init__(self, name, n_classes,  freq, outputfolder, input_shape, regularizer_C=.001, classifier='RF'):
+    def __init__(self, name, n_classes,  freq, outputfolder, input_shape, regularizer_C=.001, classifier='RF', toler=1e-3):
         # Disclaimer: This model assumes equal shapes across all samples!
         # standard parameters
         self.name = name
@@ -98,6 +98,7 @@ class WaveletModel(ClassificationModel):
         self.freq = freq
         self.regularizer_C = regularizer_C
         self.classifier = classifier
+        self.toler = toler
         self.dropout = .25
         self.activation = 'relu'
         self.final_activation = 'sigmoid'
@@ -110,9 +111,9 @@ class WaveletModel(ClassificationModel):
         
         if self.classifier == 'LR':
             if self.n_classes > 1:
-                clf = OneVsRestClassifier(LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2))
+                clf = OneVsRestClassifier(LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2, tol=self.toler))
             else:
-                clf = LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2)
+                clf = LogisticRegression(C=self.regularizer_C, solver='saga', max_iter=3000, n_jobs=-2, tol=self.toler)
             clf.fit(XF_train, y_train)
             pickle.dump(clf, open(self.outputfolder+'clf.pkl', 'wb'))
         elif self.classifier == 'RF':
