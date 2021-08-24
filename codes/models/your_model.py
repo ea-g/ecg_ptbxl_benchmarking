@@ -20,12 +20,14 @@ def matrix_2_df(matrix, column_prefix='lead_'):
 
 
 class MiniRocketModel(ClassificationModel):
-    def __init__(self, name, n_classes,  sampling_frequency, outputfolder, input_shape):
+    def __init__(self, name, n_classes,  sampling_frequency, outputfolder, input_shape, regularizer_C=.001, classifier='LR'):
         self.name = name
         self.n_classes = n_classes
         self.sampling_frequency = sampling_frequency
         self.outputfolder = outputfolder
         self.input_shape = input_shape
+        self.regularizer_C = regularizer_C
+        self.classifier = classifier
 
     def fit(self, X_train, y_train, X_val, y_val):
         mini_mv = MiniRocketMultivariate().fit(matrix_2_df(X_train))
